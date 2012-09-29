@@ -47,9 +47,34 @@ public class CachingInputStream extends InputStream {
 		super.close();
 		
 		// Write remaining stuff to output
-		writeTo.write(buffer.array(), 0, buffer.position() + 1);
+		writeTo.write(buffer.array(), 0, buffer.position() - 1);
 		buffer = null;
 		writeTo.close();
+	}
+
+	@Override
+	public int available() throws IOException {
+		return readFrom.available();
+	}
+
+	@Override
+	public synchronized void mark(int readlimit) {
+		readFrom.mark(readlimit);
+	}
+
+	@Override
+	public boolean markSupported() {
+		return readFrom.markSupported();
+	}
+
+	@Override
+	public synchronized void reset() throws IOException {
+		readFrom.reset();
+	}
+
+	@Override
+	public long skip(long n) throws IOException {
+		return readFrom.skip(n);
 	}
 
 }

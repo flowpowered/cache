@@ -130,6 +130,6 @@ public class DownpourCache {
 		// Sanitize string
 		String path = url.toString();
 		path = path.replaceAll("[^a-zA-Z]", "-");
-		return (new StringBuilder()).append(path).append('-').append(url.toString()).toString();
+		return (new StringBuilder()).append(path).append('-').append(url.toString().hashCode()).toString();
 	}
 }
