@@ -62,14 +62,6 @@ nb-configuration.xml
 *.ipr
 *.iws
 
-# Spout runtime folders #
+# Test folders #
 #########################
-/cache
-/config
-/data
-/logs
-/plugins
-/resources
-/update
-/worldscachedb
-cachedb/
+/cachedb
