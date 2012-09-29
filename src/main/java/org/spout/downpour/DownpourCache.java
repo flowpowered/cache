@@ -15,7 +15,8 @@ public class DownpourCache {
 	private boolean offlineMode = false;
 	private long maxAge = 1000 * 60 * 60 * 24 * 7; // Keep for one week
 	private File cacheDb = null;
-	private static final String CACHE_FILE_SUFFIX = ".downpurcache";
+	public static final String CACHE_FILE_SUFFIX = ".downpurcache";
+	public static final DefaultURLConnector DEFAULT_CONNECTOR = new DefaultURLConnector();
 	
 	/**
 	 * Creates a new cache db
@@ -68,7 +69,7 @@ public class DownpourCache {
 		return offlineMode;
 	}
 	
-	public InputStream get(URL url, LinkedHashMap<String, String> headers) throws NoCacheException, IOException {
+	public InputStream get(URL url, URLConnector connector) throws NoCacheException, IOException {
 		File cacheFile = getCachedFile(url);
 		if (isOfflineMode()) {
 			if (cacheFile.exists()) {
@@ -77,11 +78,7 @@ public class DownpourCache {
 				throw new NoCacheException();
 			}
 		} else {
-			URLConnection conn = url.openConnection();
-			for (Entry<String, String> header:headers.entrySet()) {
-				conn.setRequestProperty(header.getKey(), header.getValue());
-			}
-			InputStream readFrom = conn.getInputStream();
+			InputStream readFrom = connector.openURL(url);
 			OutputStream writeTo = new FileOutputStream(cacheFile);
 			
 			return new CachingInputStream(readFrom, writeTo);
@@ -89,7 +86,7 @@ public class DownpourCache {
 	}
 	
 	public InputStream get(URL url) throws NoCacheException, IOException {
-		return get(url, new LinkedHashMap<String, String>());
+		return get(url, DEFAULT_CONNECTOR);
 	}
 	
 	private File getCachedFile(URL url) {
