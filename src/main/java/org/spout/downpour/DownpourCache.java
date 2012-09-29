@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
 
 public class DownpourCache {
 	private boolean offlineMode = false;
@@ -130,7 +127,9 @@ public class DownpourCache {
 	}
 	
 	private String getCacheKey(URL url) {
-		// TODO make better keys
-		return url.hashCode() + "";
+		// Sanitize string
+		String path = url.toString();
+		path = path.replaceAll("[^a-zA-Z]", "-");
+		return (new StringBuilder()).append(path).append('-').append(url.toString()).toString();
 	}
 }
