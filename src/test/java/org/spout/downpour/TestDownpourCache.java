@@ -11,7 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TestDownpourCache {
-	public static final String TEST_URL = "http://get.spout.org/about.yml";
+	public static final String TEST_URL = "http://get.spout.org/about.ymlg";
 	
 	@Test
 	public void testCache() throws MalformedURLException, NoCacheException, IOException {

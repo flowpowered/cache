@@ -28,6 +28,9 @@ public class CachingInputStream extends InputStream {
 	@Override
 	public int read() throws IOException {
 		int data = readFrom.read();
+		if (data == -1) {
+			return data; // this is the end of the stream, no need to cache anything
+		}
 		if (!buffer.hasRemaining()) { // Buffer is full
 			// Write buffer to output
 			writeTo.write(buffer.array(), 0, buffer.capacity());
@@ -47,7 +50,7 @@ public class CachingInputStream extends InputStream {
 		super.close();
 		
 		// Write remaining stuff to output
-		writeTo.write(buffer.array(), 0, buffer.position() - 1);
+		writeTo.write(buffer.array(), 0, buffer.position());
 		buffer = null;
 		writeTo.close();
 	}
