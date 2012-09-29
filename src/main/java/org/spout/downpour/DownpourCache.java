@@ -53,22 +53,50 @@ public class DownpourCache {
 		}
 	}
 	
+	/**
+	 * Sets the maximum age a cached URL will survive in this cache
+	 * 
+	 * @param maxAge the maximum age of a cache file
+	 * 
+	 * Note that if in offline mode, no cache file will be deleted so longer offline trips are possible
+	 */
 	public void setMaxAge(long maxAge) {
 		this.maxAge = maxAge;
 	}
 	
+	/**
+	 * Gets the maximum age a cached URL will survive in this cache
+	 * @return the maximum age of a cache file
+	 */
 	public long getMaxAge() {
 		return maxAge;
 	}
 	
+	/**
+	 * Sets whether this cache is offline, i.e. read from cache files instead of looking for data online
+	 * @param offlineMode if this cache is in offline mode
+	 */
 	public void setOfflineMode(boolean offlineMode) {
 		this.offlineMode = offlineMode;
 	}
 	
+	/**
+	 * Gets if this cache is in offline mode
+	 * @return if this cache is in offline mode
+	 */
 	public boolean isOfflineMode() {
 		return offlineMode;
 	}
 	
+	/**
+	 * If online, connects to the host and opens an InputStream that reads the url.
+	 * If offline, reads from the cache file.
+	 * @param url the URL to connect to
+	 * @param connector the URLConnector to open an InputStream from an URL {@link URLConnector}
+	 * @return an InputStream that reads from the URL or the cached File
+	 * @throws NoCacheException if offline and the cache file is missing
+	 * @throws IOException if an IOException occurs during connecting or reading the cache file
+	 */
 	public InputStream get(URL url, URLConnector connector) throws NoCacheException, IOException {
 		File cacheFile = getCachedFile(url);
 		if (isOfflineMode()) {
@@ -85,6 +113,14 @@ public class DownpourCache {
 		}
 	}
 	
+	/**
+	 * If online, connects to the host and opens an InputStream that reads the url.
+	 * If offline, reads from the cache file.
+	 * @param url the URL to connect to
+	 * @return an InputStream that reads from the URL or the cached File
+	 * @throws NoCacheException if offline and the cache file is missing
+	 * @throws IOException if an IOException occurs during connecting or reading the cache file
+	 */
 	public InputStream get(URL url) throws NoCacheException, IOException {
 		return get(url, DEFAULT_CONNECTOR);
 	}
