@@ -1,9 +1,10 @@
 package org.spout.downpour;
 
+import java.io.IOException;
+
 /**
  * An exception that is thrown when the cache file was not found
  */
-public class NoCacheException extends Exception {
-	private static final long serialVersionUID = -6254322244828322043L;
-
+public class NoCacheException extends IOException {
+	private static final long serialVersionUID = 1L;
 }
