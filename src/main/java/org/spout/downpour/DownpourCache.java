@@ -86,15 +86,17 @@ public class DownpourCache {
 	}
 	
 	/**
-	 * If online, connects to the host and opens an InputStream that reads the url.
+	 * If online and the cache file exists, reads from the cache file
+	 * If online and the cache file doesn't exist, connects to the host and opens an InputStream that reads the url.
 	 * If offline, reads from the cache file.
 	 * @param url the URL to connect to
 	 * @param connector the URLConnector to open an InputStream from an URL {@link URLConnector}
+	 * @param force if true, doesn't use the cache file when online
 	 * @return an InputStream that reads from the URL or the cached File
 	 * @throws NoCacheException if offline and the cache file is missing
 	 * @throws IOException if an IOException occurs during connecting or reading the cache file
 	 */
-	public InputStream get(URL url, URLConnector connector) throws NoCacheException, IOException {
+	public InputStream get(URL url, URLConnector connector, boolean force) throws NoCacheException, IOException {
 		File cacheFile = getCachedFile(url);
 		if (isOfflineMode()) {
 			if (cacheFile.exists()) {
@@ -103,11 +105,29 @@ public class DownpourCache {
 				throw new NoCacheException();
 			}
 		} else {
-			InputStream readFrom = connector.openURL(url);
-			OutputStream writeTo = new FileOutputStream(cacheFile);
-			
-			return new CachingInputStream(readFrom, writeTo);
+			if (cacheFile.exists() && !force) {
+				return new FileInputStream(cacheFile);
+			} else {
+				InputStream readFrom = connector.openURL(url);
+				OutputStream writeTo = new FileOutputStream(cacheFile);
+				
+				return new CachingInputStream(readFrom, writeTo);
+			}
 		}
+	}
+	
+	/**
+	 * If online and the cache file exists, reads from the cache file
+	 * If online and the cache file doesn't exist, connects to the host and opens an InputStream that reads the url.
+	 * If offline, reads from the cache file.
+	 * @param url the URL to connect to
+	 * @param connector the URLConnector to open an InputStream from an URL {@link URLConnector}
+	 * @return an InputStream that reads from the URL or the cached File
+	 * @throws NoCacheException if offline and the cache file is missing
+	 * @throws IOException if an IOException occurs during connecting or reading the cache file
+	 */
+	public InputStream get(URL url, URLConnector connector) throws NoCacheException, IOException {
+		return get(url, connector, false);
 	}
 	
 	/**
