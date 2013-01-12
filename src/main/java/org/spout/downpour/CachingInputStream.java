@@ -90,6 +90,13 @@ public class CachingInputStream extends InputStream {
 					}
 				}
 			} else {
+				if (onFailure != null) {
+					try {
+						onFailure.run();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 				throw new IOException("File was not completely downloaded!");
 			}
 		}
