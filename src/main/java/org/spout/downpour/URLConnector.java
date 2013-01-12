@@ -10,7 +10,6 @@ import java.net.URL;
  * For a default implementation, see {@link DefaultURLConnector}.
  */
 public interface URLConnector {
-	
 	/**
 	 * Opens the URL and returns an InputStream on that URL
 	 * @param url the url to open
