@@ -2,6 +2,7 @@ package org.spout.downpour;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 /**
@@ -16,5 +17,5 @@ public interface URLConnector {
 	 * @return the InputStream on said URL
 	 * @throws IOException when an error occurs while opening the connection
 	 */
-	public CachingInputStream openURL(URL url, File temp, File writeTo) throws IOException;
+	public InputStream openURL(URL url, File temp, File writeTo) throws IOException;
 }

@@ -80,6 +80,8 @@ public class CachingInputStream extends InputStream {
 		buffer = null;
 		writeTo.close();
 		
+		receivedBytes --; // Fencepost problem here too
+		
 		if (expectedBytes != -1) {
 			if (expectedBytes == receivedBytes) {
 				if (onFinish != null) {
@@ -97,7 +99,7 @@ public class CachingInputStream extends InputStream {
 						e.printStackTrace();
 					}
 				}
-				throw new IOException("File was not completely downloaded!");
+				throw new IOException("File was not completely downloaded! Expected="+getExpectedBytes()+" actual="+getReceivedBytes());
 			}
 		}
 	}
