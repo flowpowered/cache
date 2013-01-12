@@ -32,18 +32,34 @@ public class DefaultURLConnector implements URLConnector {
 	
 	public InputStream openURL(URL url, final File temp, final File writeTo) throws IOException {
 		URLConnection conn = url.openConnection();
+		
 		HttpURLConnection httpconn = null;
 		if (url.getProtocol().equalsIgnoreCase("http")) {
 			httpconn = (HttpURLConnection) conn;
 		}
+		
+		// Check modified date
 		DateTime modified = null;
 		if (writeTo.exists()) {
 			modified = new DateTime(writeTo.lastModified());
 			conn.setRequestProperty("If-Modified-Since", modified.toString(HTTP_DATE_TIME));
 		}
 		setHeaders(conn);
+		
 		conn.connect();
+		
+		// Modified date handling. If server copy isn't newer than our cache, don't download again and use cached copy instead.
+		
+		// This checks if the server has replied with 304 NOT MODIFIED
+		if (httpconn != null && httpconn.getResponseCode() == 304) { // not modified
+			conn.getInputStream().close();
+			conn.getOutputStream().close();
+			return new FileInputStream(writeTo);
+		}
+		
 		if (modified != null) {
+			
+			// This checks for the last modified date
 			long i = conn.getHeaderFieldDate("Last-Modified", -1);
 			DateTime serverModified = new DateTime(i, DateTimeZone.forOffsetHours(0));
 			if (serverModified.isBefore(modified) || serverModified.isEqual(modified)) { // file hasn't changed
@@ -52,28 +68,29 @@ public class DefaultURLConnector implements URLConnector {
 				return new FileInputStream(writeTo);
 			}
 		}
-		if (httpconn != null && httpconn.getResponseCode() == 304) { // not modified
-			conn.getInputStream().close();
-			conn.getOutputStream().close();
-			return new FileInputStream(writeTo);
-		} else {
-			CachingInputStream cache = new CachingInputStream(conn.getInputStream(), new FileOutputStream(temp));
-			cache.setExpectedBytes(conn.getContentLength());
-			cache.setOnFinish(new Runnable() {
-				public void run() {
-					if (writeTo.exists()) {
-						writeTo.delete();
-					}
-					temp.renameTo(writeTo);
+		
+		// Actually download the server copy
+		CachingInputStream cache = new CachingInputStream(conn.getInputStream(), new FileOutputStream(temp));
+		cache.setExpectedBytes(conn.getContentLength());
+		
+		// When successfully downloaded, move temp file to normal location
+		cache.setOnFinish(new Runnable() {
+			public void run() {
+				if (writeTo.exists()) {
+					writeTo.delete();
 				}
-			});
-			cache.setOnFailure(new Runnable() {
-				public void run() {
-					temp.delete();
-				}
-			});
-			return cache;
-		}
+				temp.renameTo(writeTo);
+			}
+		});
+		
+		// When failed, delete temp file
+		cache.setOnFailure(new Runnable() {
+			public void run() {
+				temp.delete();
+			}
+		});
+		
+		return cache;
 	}
 
 	public void setHeaders(URLConnection connection) {
