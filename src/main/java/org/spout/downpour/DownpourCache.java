@@ -12,6 +12,7 @@ public class DownpourCache {
 	private boolean offlineMode = false;
 	private long maxAge = 1000 * 60 * 60 * 24 * 7; // Keep for one week
 	private File cacheDb = null;
+	private File tempDir = null;
 	public static final String CACHE_FILE_SUFFIX = ".downpurcache";
 	public static final DefaultURLConnector DEFAULT_CONNECTOR = new DefaultURLConnector();
 	
@@ -28,6 +29,10 @@ public class DownpourCache {
 			throw new IllegalStateException("DB needs to be a directory");
 		} else if (!db.exists()) {
 			db.mkdirs();
+			tempDir = new File(db, "temp");
+			if (!tempDir.exists()) {
+				tempDir.mkdirs();
+			}
 		}
 	}
 	
@@ -45,6 +50,12 @@ public class DownpourCache {
 					if (currentTime - getMaxAge() > lastModified) {
 						file.delete();
 					}
+				}
+			}
+			contents = tempDir.listFiles();
+			for (File file:contents) {
+				if (file.isFile()) {
+					file.delete();
 				}
 			}
 		}
@@ -108,10 +119,8 @@ public class DownpourCache {
 			if (cacheFile.exists() && !force) {
 				return new FileInputStream(cacheFile);
 			} else {
-				InputStream readFrom = connector.openURL(url);
-				OutputStream writeTo = new FileOutputStream(cacheFile);
-				
-				return new CachingInputStream(readFrom, writeTo);
+				File temp = new File(tempDir, getCacheKey(url) + CACHE_FILE_SUFFIX);
+				return connector.openURL(url, temp, cacheFile);
 			}
 		}
 	}

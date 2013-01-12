@@ -13,6 +13,11 @@ public class CachingInputStream extends InputStream {
 	private OutputStream writeTo = null;
 	
 	private ByteBuffer buffer = ByteBuffer.allocate(1024);
+	
+	private Runnable onFinish = null;
+	private Runnable onFailure = null;
+	private long expectedBytes = -1;
+	private long receivedBytes = 0;
 
 	/**
 	 * Creates a new caching InputStream
@@ -24,10 +29,31 @@ public class CachingInputStream extends InputStream {
 		this.readFrom = readFrom;
 		this.writeTo = writeTo;
 	}
+	
+	public void setOnFinish(Runnable onFinish) {
+		this.onFinish = onFinish;
+	}
+	
+	public void setOnFailure(Runnable onFailure) {
+		this.onFailure = onFailure;
+	}
+	
+	public synchronized void setExpectedBytes(long expectedBytes) {
+		this.expectedBytes = expectedBytes;
+	}
+	
+	public synchronized long getReceivedBytes() {
+		return receivedBytes;
+	}
+	
+	public long getExpectedBytes() {
+		return expectedBytes;
+	}
 
 	@Override
-	public int read() throws IOException {
+	public synchronized int read() throws IOException {
 		int data = readFrom.read();
+		receivedBytes ++;
 		if (data == -1) {
 			return data; // this is the end of the stream, no need to cache anything
 		}
@@ -53,6 +79,20 @@ public class CachingInputStream extends InputStream {
 		writeTo.write(buffer.array(), 0, buffer.position());
 		buffer = null;
 		writeTo.close();
+		
+		if (expectedBytes != -1) {
+			if (expectedBytes == receivedBytes) {
+				if (onFinish != null) {
+					try {
+						onFinish.run();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			} else {
+				throw new IOException("File was not completely downloaded!");
+			}
+		}
 	}
 
 	@Override
