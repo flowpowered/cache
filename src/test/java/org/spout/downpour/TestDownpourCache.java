@@ -15,8 +15,14 @@ public class TestDownpourCache {
 	
 	@Test
 	public void testCache() throws MalformedURLException, NoCacheException, IOException {
-		DownpourCache cache = new DownpourCache(new File("cachedb"));
-		InputStream in = cache.get(new URL(TEST_URL));
+		File cacheDb = new File("cachedb");
+		if (cacheDb.exists()) {
+			for (File file:cacheDb.listFiles()) {
+				file.delete();
+			}
+		}
+		DownpourCache cache = new DownpourCache(cacheDb);
+		InputStream in = cache.get(new URL(TEST_URL), DownpourCache.DEFAULT_CONNECTOR, true);
 		ByteBuffer onlineTest = readFrom(in);
 		cache.setOfflineMode(true);
 		in = cache.get(new URL(TEST_URL));
