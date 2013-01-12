@@ -41,6 +41,7 @@ public class DefaultURLConnector implements URLConnector {
 			modified = new DateTime(writeTo.lastModified());
 			conn.setRequestProperty("If-Modified-Since", modified.toString(HTTP_DATE_TIME));
 		}
+		setHeaders(conn);
 		conn.connect();
 		if (modified != null) {
 			long i = conn.getHeaderFieldDate("Last-Modified", -1);
@@ -73,5 +74,9 @@ public class DefaultURLConnector implements URLConnector {
 			});
 			return cache;
 		}
+	}
+
+	public void setHeaders(URLConnection connection) {
+		// nothing to do here
 	}
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Returns an InputStream for a URL.
@@ -18,4 +19,10 @@ public interface URLConnector {
 	 * @throws IOException when an error occurs while opening the connection
 	 */
 	public InputStream openURL(URL url, File temp, File writeTo) throws IOException;
+	
+	/**
+	 * You can override this method to set your own header values when needed. This will be called before connection.
+	 * @param connection
+	 */
+	public void setHeaders(URLConnection connection);
 }
