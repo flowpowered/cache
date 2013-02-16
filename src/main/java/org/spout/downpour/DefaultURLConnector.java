@@ -96,4 +96,8 @@ public class DefaultURLConnector implements URLConnector {
 	public void setHeaders(URLConnection connection) {
 		// nothing to do here
 	}
+	
+	public void onConnected(URLConnection connection) {
+		// nothing to do here
+	}
 }
