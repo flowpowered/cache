@@ -111,7 +111,7 @@ public class DownpourCache {
 			if (cacheFile.exists()) {
 				return new FileInputStream(cacheFile);
 			} else {
-				throw new NoCacheException();
+				throw new NoCacheException("Cache does not contain expected file: [" + cacheFile.getPath() + "]");
 			}
 		} else {
 			if (cacheFile.exists() && !force) {
