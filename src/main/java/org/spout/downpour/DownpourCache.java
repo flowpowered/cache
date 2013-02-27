@@ -27,10 +27,10 @@ public class DownpourCache {
 			throw new IllegalStateException("DB needs to be a directory");
 		} else if (!db.exists()) {
 			db.mkdirs();
-			tempDir = new File(db, "temp");
-			if (!tempDir.exists()) {
-				tempDir.mkdirs();
-			}
+		}
+		tempDir = new File(db, "temp");
+		if (!tempDir.exists()) {
+			tempDir.mkdirs();
 		}
 	}
 	

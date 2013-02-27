@@ -101,9 +101,10 @@ public class DefaultURLConnector implements URLConnector {
 	}
 
 	public void setHeaders(URLConnection connection) {
-		// nothing to do here
+		connection.setConnectTimeout(5000);
+		connection.setReadTimeout(5000);
 	}
-	
+
 	public void onConnected(URLConnection connection) {
 		// nothing to do here
 	}
