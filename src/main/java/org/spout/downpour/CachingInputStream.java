@@ -18,6 +18,7 @@ public class CachingInputStream extends InputStream {
 	private Runnable onFailure = null;
 	private long expectedBytes = -1;
 	private long receivedBytes = 0;
+	private boolean closed = false;
 
 	/**
 	 * Creates a new caching InputStream
@@ -72,34 +73,44 @@ public class CachingInputStream extends InputStream {
 	 */
 	@Override
 	public void close() throws IOException {
-		readFrom.close();
-		super.close();
-		
-		// Write remaining stuff to output
-		writeTo.write(buffer.array(), 0, buffer.position());
-		buffer = null;
-		writeTo.close();
-		
-		receivedBytes --; // Fencepost problem here too
-		
-		if (expectedBytes != -1) {
-			if (expectedBytes == receivedBytes) {
-				if (onFinish != null) {
-					try {
-						onFinish.run();
-					} catch (Exception e) {
-						e.printStackTrace();
+		if (!closed) {
+			closed = true;
+			
+			readFrom.close();
+			super.close();
+			
+			// Write remaining stuff to output
+			try {
+				if (buffer != null) {
+					writeTo.write(buffer.array(), 0, buffer.position());
+					buffer = null;
+				}
+				writeTo.close();
+			} catch (IOException e) {
+				throw e;
+			} finally {
+				receivedBytes --; // Fencepost problem here too
+				
+				if (expectedBytes != -1) {
+					if (expectedBytes == receivedBytes) {
+						if (onFinish != null) {
+							try {
+								onFinish.run();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					} else {
+						if (onFailure != null) {
+							try {
+								onFailure.run();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+						throw new IOException("File was not completely downloaded! Expected="+getExpectedBytes()+" actual="+getReceivedBytes());
 					}
 				}
-			} else {
-				if (onFailure != null) {
-					try {
-						onFailure.run();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-				throw new IOException("File was not completely downloaded! Expected="+getExpectedBytes()+" actual="+getReceivedBytes());
 			}
 		}
 	}
