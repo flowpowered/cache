@@ -65,8 +65,13 @@ public class DefaultURLConnector implements URLConnector {
 			long i = conn.getHeaderFieldDate("Last-Modified", -1);
 			DateTime serverModified = new DateTime(i, DateTimeZone.forOffsetHours(0));
 			if (serverModified.isBefore(modified) || serverModified.isEqual(modified)) { // file hasn't changed
-				conn.getInputStream().close();
-				conn.getOutputStream().close();
+				try {
+					conn.getInputStream().close();
+					
+				} catch (IOException ignore) { }
+				try {
+					conn.getOutputStream().close();
+				} catch (IOException ignore) { }
 				return new FileInputStream(writeTo);
 			}
 		}

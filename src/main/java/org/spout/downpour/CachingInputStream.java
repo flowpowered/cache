@@ -19,6 +19,7 @@ public class CachingInputStream extends InputStream {
 	private long expectedBytes = -1;
 	private long receivedBytes = 0;
 	private boolean closed = false;
+	private boolean exception = false;
 
 	/**
 	 * Creates a new caching InputStream
@@ -53,22 +54,28 @@ public class CachingInputStream extends InputStream {
 
 	@Override
 	public synchronized int read() throws IOException {
-		int data = readFrom.read();
-		receivedBytes ++;
-		if (data == -1) {
-			receivedBytes--;
-			return data; // this is the end of the stream, no need to cache anything
+		int data = Integer.MAX_VALUE;
+		try {
+			data = readFrom.read();
+			receivedBytes ++;
+			if (data == -1) {
+				receivedBytes--;
+				return data; // this is the end of the stream, no need to cache anything
+			}
+			if (!buffer.hasRemaining()) { // Buffer is full
+				// Write buffer to output
+				writeTo.write(buffer.array(), 0, buffer.capacity());
+				// Reset buffer
+				buffer.position(0);
+			}
+			buffer.put((byte) data);
+			return data;
+		} catch (IOException e) {
+			exception = true;
+			throw e;
 		}
-		if (!buffer.hasRemaining()) { // Buffer is full
-			// Write buffer to output
-			writeTo.write(buffer.array(), 0, buffer.capacity());
-			// Reset buffer
-			buffer.position(0);
-		}
-		buffer.put((byte) data);
-		return data;
 	}
-	
+
 	/**
 	 * Closes the stream it reads from and the stream it caches to
 	 */
@@ -88,10 +95,11 @@ public class CachingInputStream extends InputStream {
 				}
 				writeTo.close();
 			} catch (IOException e) {
+				exception = true;
 				throw e;
 			} finally {				
-				if (expectedBytes != -1) {
-					if (expectedBytes == receivedBytes) {
+				if (expectedBytes != -1 || !exception) {
+					if (expectedBytes == receivedBytes || (expectedBytes == -1 || !exception)) {
 						if (onFinish != null) {
 							try {
 								onFinish.run();
