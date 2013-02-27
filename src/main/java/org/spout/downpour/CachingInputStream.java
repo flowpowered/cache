@@ -56,6 +56,7 @@ public class CachingInputStream extends InputStream {
 		int data = readFrom.read();
 		receivedBytes ++;
 		if (data == -1) {
+			receivedBytes--;
 			return data; // this is the end of the stream, no need to cache anything
 		}
 		if (!buffer.hasRemaining()) { // Buffer is full
@@ -88,9 +89,7 @@ public class CachingInputStream extends InputStream {
 				writeTo.close();
 			} catch (IOException e) {
 				throw e;
-			} finally {
-				receivedBytes --; // Fencepost problem here too
-				
+			} finally {				
 				if (expectedBytes != -1) {
 					if (expectedBytes == receivedBytes) {
 						if (onFinish != null) {
