@@ -48,6 +48,8 @@ public class DefaultURLConnector implements URLConnector {
 		
 		conn.connect();
 		
+		onConnected(conn);
+		
 		// Modified date handling. If server copy isn't newer than our cache, don't download again and use cached copy instead.
 		
 		// This checks if the server has replied with 304 NOT MODIFIED
