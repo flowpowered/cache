@@ -1,3 +1,22 @@
+/*
+ * This file is part of Downpour.
+ *
+ * Copyright (c) 2012 Spout LLC <http://www.spout.org/>
+ * Downpour is licensed under the GNU Lesser General Public License.
+ *
+ * Downpour is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Downpour is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.spout.downpour;
 
 import java.io.File;
@@ -11,9 +30,9 @@ public class DownpourCache {
 	private long maxAge = 1000 * 60 * 60 * 24 * 7; // Keep for one week
 	private File cacheDb = null;
 	private File tempDir = null;
-	public static final String CACHE_FILE_SUFFIX = ".downpurcache";
+	public static final String CACHE_FILE_SUFFIX = ".downpourcache";
 	public static final DefaultURLConnector DEFAULT_CONNECTOR = new DefaultURLConnector();
-	
+
 	/**
 	 * Creates a new cache db
 	 * 
@@ -33,7 +52,7 @@ public class DownpourCache {
 			tempDir.mkdirs();
 		}
 	}
-	
+
 	/**
 	 * Deletes all caches older than {@link getMaxAge()}
 	 * <br/>Does not do anything in offline mode
@@ -58,7 +77,7 @@ public class DownpourCache {
 			}
 		}
 	}
-	
+
 	/**
 	 * Sets the maximum age a cached URL will survive in this cache
 	 * 
@@ -69,7 +88,7 @@ public class DownpourCache {
 	public void setMaxAge(long maxAge) {
 		this.maxAge = maxAge;
 	}
-	
+
 	/**
 	 * Gets the maximum age a cached URL will survive in this cache
 	 * @return the maximum age of a cache file
@@ -77,7 +96,7 @@ public class DownpourCache {
 	public long getMaxAge() {
 		return maxAge;
 	}
-	
+
 	/**
 	 * Sets whether this cache is offline, i.e. read from cache files instead of looking for data online
 	 * @param offlineMode if this cache is in offline mode
@@ -85,7 +104,7 @@ public class DownpourCache {
 	public void setOfflineMode(boolean offlineMode) {
 		this.offlineMode = offlineMode;
 	}
-	
+
 	/**
 	 * Gets if this cache is in offline mode
 	 * @return if this cache is in offline mode
@@ -93,7 +112,7 @@ public class DownpourCache {
 	public boolean isOfflineMode() {
 		return offlineMode;
 	}
-	
+
 	/**
 	 * If online and the cache file exists, reads from the cache file
 	 * If online and the cache file doesn't exist, connects to the host and opens an InputStream that reads the url.
@@ -122,7 +141,7 @@ public class DownpourCache {
 			}
 		}
 	}
-	
+
 	/**
 	 * If online and the cache file exists, reads from the cache file
 	 * If online and the cache file doesn't exist, connects to the host and opens an InputStream that reads the url.
@@ -136,7 +155,7 @@ public class DownpourCache {
 	public InputStream get(URL url, URLConnector connector) throws NoCacheException, IOException {
 		return get(url, connector, false);
 	}
-	
+
 	/**
 	 * If online, connects to the host and opens an InputStream that reads the url.
 	 * If offline, reads from the cache file.
@@ -148,11 +167,11 @@ public class DownpourCache {
 	public InputStream get(URL url) throws NoCacheException, IOException {
 		return get(url, DEFAULT_CONNECTOR);
 	}
-	
+
 	private File getCachedFile(URL url) {
 		return new File(cacheDb, getCacheKey(url) + CACHE_FILE_SUFFIX);
 	}
-	
+
 	private String getCacheKey(URL url) {
 		// Sanitize string
 		String path = url.toString();

@@ -1,9 +1,16 @@
+# Build files #
+###############
+MANIFEST.MF
+dependency-reduced-pom.xml
+
 # Compiled source #
 ###################
-bin
-lib
-out
-target
+/bin
+/build
+/dist
+/lib
+/out
+/target
 *.com
 *.class
 *.dll
@@ -11,9 +18,11 @@ target
 *.o
 *.so
 
-# Git #
-#######
-.git
+# Databases #
+#############
+*.db
+*.sql
+*.sqlite
 
 # Packages #
 ############
@@ -26,14 +35,20 @@ target
 *.tar
 *.zip
 
-# Logs and databases #
-######################
-*.log
-*.sql
-*.sqlite
+# Repository files #
+####################
+.git
 
-# OS generated files #
-######################
+# Log files #
+#############
+*.log
+
+# Miscellaneous #
+#################
+*.bak
+
+# OS generated #
+################
 .DS_Store
 ehthumbs.db
 Icon?
@@ -43,25 +58,17 @@ Thumbs.db
 #################
 .classpath
 .externalToolBuilders
+.idea
 .project
 .settings
-MANIFEST.MF
-
-# Netbeans files #
-##################
-build
-dist
 nbproject
+atlassian-ide-plugin.xml
 build.xml
 nb-configuration.xml
-
-# IntelliJ IDEA files #
-#######################
-.idea
 *.iml
 *.ipr
 *.iws
 
-# Test folders #
-#########################
+# Test files #
+##############
 /cachedb

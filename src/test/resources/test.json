@@ -1,0 +1,28 @@
+{
+    "unitTest" : [ # required
+        {
+            "comment" : "Getting Started except(input, expected)",
+            "method" : "exceptionExample",
+            "testCases" : [
+                {
+                    "name" : "some descriptive text", # optional
+                    "args" : [ "1", null ],
+                    "exceptionThrown" : "java.lang.Exception" # optinal, check that the fully qualified exception is thrown
+                },
+                {
+                    "args" : [ "1", null ],
+                    "exceptionThrown" : "java.lang.Exception",
+                    "exceptionMessage" : "This is a test exception: 1" # optional check that the exception message matches
+                },
+                {
+                    "args" : [ "1", null ],
+                    "exceptionMessage" : "This is a test exception: 1"
+                },
+                {
+                    "skip" : true, # optional, skip this test only, default false
+                    "args" : [ null, null ]
+                }
+            ]
+        }
+    ]
+}

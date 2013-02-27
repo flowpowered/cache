@@ -1,41 +1,199 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Project information -->
+	<name>Downpour</name>
 	<groupId>org.spout</groupId>
 	<artifactId>downpour</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Downpour</name>
-	<description>Caches HTTP requests for offline access.</description>
+	<url>http://www.spout.org</url>
+	<inceptionYear>2012</inceptionYear>
+	<description>Offline caching library that provides a lightweight API to manage a local cache, while supporting dynamic responses.</description>
+
+	<!-- Build properties -->
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<buildNumber>0</buildNumber><!-- DO NOT TOUCH! -->
+	</properties>
+
+	<!-- Organization information -->
+	<organization>
+		<name>Spout LLC</name>
+		<url>http://www.spout.org</url>
+	</organization>
+
+	<!-- License information -->
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License Version 3</name>
+			<url>http://gnu.org/licenses/lgpl.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<!-- Source code access -->
+	<scm>
+		<developerConnection>scm:git:git@github.com:SpoutDev/Downpour.git</developerConnection>
+		<connection>scm:git:git://github.com/SpoutDev/Downpour.git</connection>
+		<url>https://github.com/SpoutDev/Downpour</url>
+	</scm>
+
+	<!-- Build server -->
+	<ciManagement>
+		<system>jenkins</system>
+		<url>http://build.spout.org/job/Downpour</url>
+	</ciManagement>
+
+	<!-- Issue tracker -->
+	<issueManagement>
+		<system>jira</system>
+		<url>http://issues.spout.org/browse/LIB</url>
+	</issueManagement>
+
+	<!-- Dependency repositories -->
 	<repositories>
 		<repository>
 			<id>spout-repo</id>
 			<url>http://repo.spout.org</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
 		</repository>
 	</repositories>
+
+	<!-- Build plugin repositories -->
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spout-repo</id>
+			<url>http://repo.spout.org</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- Distribution management -->
+	<distributionManagement>
+		<!-- Publish releases here -->
+		<repository>
+			<id>spout-releases</id>
+			<url>http://nexus.spout.org/content/repositories/releases</url>
+		</repository>
+		<!-- Publish snapshots here -->
+		<snapshotRepository>
+			<id>spout-snapshots</id>
+			<url>http://nexus.spout.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<!-- Project dependencies -->
 	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-			<scope>test</scope>
-		</dependency>
+		<!-- Provided by third-party -->
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<version>2.1</version>
 		</dependency>
+		<!-- Testing only -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+
+	<!-- Build configuration -->
 	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
+		<defaultGoal>clean install</defaultGoal>
+
+		<!-- Resources to include -->
+		<resources>
+			<!-- Static resources -->
+			<resource>
+				<filtering>false</filtering>
+				<directory>${project.basedir}</directory>
+				<targetPath>.</targetPath>
+				<includes>
+					<include>LICENSE.txt</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<!-- Build plugins -->
 		<plugins>
+			<!-- License headers plugin -->
 			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.10.b1</version>
+				<executions>
+					<execution>
+						<configuration>
+							<properties>
+								<name>${project.name}</name>
+								<url>${project.organization.url}</url>
+								<inceptionYear>${project.inceptionYear}</inceptionYear>
+								<organization>${project.organization.name}</organization>
+							</properties>
+							<quiet>true</quiet>
+							<encoding>UTF-8</encoding>
+							<strictCheck>true</strictCheck>
+							<header>${project.basedir}/HEADER.txt</header>
+							<mapping>
+								<java>SLASHSTAR_STYLE</java>
+							</mapping>
+							<keywords>
+								<keyword>${project.name}</keyword>
+								<keyword>license</keyword>
+							</keywords>
+							<includes>
+								<include>src/main/java/**</include>
+								<include>src/test/java/**</include>
+							</includes>
+						</configuration>
+						<phase>clean</phase>
+						<goals>
+							<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Source compiler plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.0</version>
 				<configuration>
-					<source />
-					<target />
+					<source>1.6</source>
+					<target>1.6</target>
+					<compilerArguments>
+						<O>-Xlint:all</O>
+						<O>-Xlint:-path</O>
+					</compilerArguments>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
+	<!-- Reporting configuration -->
+	<reporting>
+		<!-- Reporting plugins -->
+		<plugins>
+			<!-- Javadoc creation plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<doctitle><![CDATA[${project.name} ${releaseVersion} b${buildNumber} - ${maven.build.timestamp}]]></doctitle>
+					<windowtitle>Javadoc | ${project.name} ${releaseVersion} b${buildNumber}</windowtitle>
+					<author>false</author>
+					<version>false</version>
+					<linksource>true</linksource>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
