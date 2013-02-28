@@ -71,7 +71,6 @@ public class CachingInputStream extends InputStream {
 		return expectedBytes;
 	}
 
-	@Override
 	public synchronized int read() throws IOException {
 		int data = Integer.MAX_VALUE;
 		try {
