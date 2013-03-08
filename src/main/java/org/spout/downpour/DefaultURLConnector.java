@@ -73,8 +73,12 @@ public class DefaultURLConnector implements URLConnector {
 
 		// This checks if the server has replied with 304 NOT MODIFIED
 		if (httpconn != null && httpconn.getResponseCode() == 304) { // not modified
-			conn.getInputStream().close();
-			conn.getOutputStream().close();
+			try {
+				conn.getInputStream().close();
+			} catch (IOException ignore) { }
+			try {
+				conn.getOutputStream().close();
+			} catch (IOException ignore) { }
 			return new FileInputStream(writeTo);
 		}
 
