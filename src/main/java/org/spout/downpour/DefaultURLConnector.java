@@ -86,7 +86,6 @@ public class DefaultURLConnector implements URLConnector {
 			if (serverModified.isBefore(modified) || serverModified.isEqual(modified)) { // file hasn't changed
 				try {
 					conn.getInputStream().close();
-
 				} catch (IOException ignore) { }
 				try {
 					conn.getOutputStream().close();
