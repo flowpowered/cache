@@ -167,7 +167,7 @@ public class DownpourCache {
 		return get(url, DEFAULT_CONNECTOR);
 	}
 
-	private File getCachedFile(URL url) {
+	public File getCachedFile(URL url) {
 		return new File(cacheDb, getCacheKey(url) + CACHE_FILE_SUFFIX);
 	}
 
