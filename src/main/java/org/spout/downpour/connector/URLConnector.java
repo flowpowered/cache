@@ -17,13 +17,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.spout.downpour;
+package org.spout.downpour.connector;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+
 
 /**
  * Returns an InputStream for a URL.
@@ -44,4 +45,7 @@ public interface URLConnector {
 	 * @param connection
 	 */
 	public void setHeaders(URLConnection connection);
+
+	
+	public void onConnected(URLConnection connection);
 }

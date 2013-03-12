@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.spout.downpour.connector.DefaultURLConnector;
+import org.spout.downpour.connector.URLConnector;
+
 public class DownpourCache {
 	private boolean offlineMode = false;
 	private long maxAge = 1000 * 60 * 60 * 24 * 7; // Keep for one week
@@ -133,12 +136,8 @@ public class DownpourCache {
 				throw new NoCacheException("Cache does not contain expected file: [" + cacheFile.getPath() + "]");
 			}
 		} else {
-			if (cacheFile.exists() && !force) {
-				return new FileInputStream(cacheFile);
-			} else {
-				File temp = new File(tempDir, getCacheKey(url) + CACHE_FILE_SUFFIX);
-				return connector.openURL(url, temp, cacheFile);
-			}
+			File temp = new File(tempDir, getCacheKey(url) + CACHE_FILE_SUFFIX);
+			return connector.openURL(url, temp, cacheFile);
 		}
 	}
 

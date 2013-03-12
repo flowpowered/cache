@@ -17,11 +17,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.spout.downpour;
+package org.spout.downpour.connector;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -39,7 +38,7 @@ import org.joda.time.format.DateTimeFormatterBuilder;
  * Opens the URL with
  * <pre>url.openStream();</pre>
  */
-public class DefaultURLConnector implements URLConnector {
+public class DefaultURLConnector extends DownloadURLConnector implements URLConnector {
 	// Sat, 29 Oct 1994 19:43:31 GMT
 	public static final DateTimeFormatter HTTP_DATE_TIME = (new DateTimeFormatterBuilder()).appendDayOfWeekShortText().appendLiteral(", ")
 			.appendDayOfMonth(2).appendLiteral(' ')
@@ -49,6 +48,7 @@ public class DefaultURLConnector implements URLConnector {
 			.appendMinuteOfHour(2).appendLiteral(':')
 			.appendSecondOfMinute(2).appendLiteral(" GMT").toFormatter();
 
+	@Override
 	public InputStream openURL(URL url, final File temp, final File writeTo) throws IOException {
 		URLConnection conn = url.openConnection();
 
@@ -98,36 +98,6 @@ public class DefaultURLConnector implements URLConnector {
 			}
 		}
 
-		// Actually download the server copy
-		CachingInputStream cache = new CachingInputStream(conn.getInputStream(), new FileOutputStream(temp));
-		cache.setExpectedBytes(conn.getContentLength());
-
-		// When successfully downloaded, move temp file to normal location
-		cache.setOnFinish(new Runnable() {
-			public void run() {
-				if (writeTo.exists()) {
-					writeTo.delete();
-				}
-				temp.renameTo(writeTo);
-			}
-		});
-
-		// When failed, delete temp file
-		cache.setOnFailure(new Runnable() {
-			public void run() {
-				temp.delete();
-			}
-		});
-
-		return cache;
-	}
-
-	public void setHeaders(URLConnection connection) {
-		connection.setConnectTimeout(5000);
-		connection.setReadTimeout(5000);
-	}
-
-	public void onConnected(URLConnection connection) {
-		// Nothing to do here
+		return download(conn, temp, writeTo);
 	}
 }
