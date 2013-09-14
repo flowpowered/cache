@@ -6,7 +6,7 @@ jdk: oraclejdk7
 install: mvn package -DbuildNumber=$TRAVIS_BUILD_NUMBER -DciSystem=travis -Dcommit=${TRAVIS_COMMIT:0:7}
 after_success:
   # Get files for use with build, namely the custom Maven settings.xml.
-  - "git clone -b travis `git config --get remote.origin.url` target/travis"
+  - "git clone https://github.com/SpoutDev/travis-ci-resources.git target/travis"
   # Check if commit s not a pull request, if git repo is official, and if branch is master. If checks pass, deploy artifacts to Maven repository.
   - "[[ $TRAVIS_PULL_REQUEST == false ]] && [[ $TRAVIS_REPO_SLUG == SpoutDev/Downpour ]] && [[ $TRAVIS_BRANCH == master ]] && mvn deploy --settings target/travis/settings.xml"
 
