@@ -57,12 +57,17 @@ public class DefaultURLConnector extends DownloadURLConnector implements URLConn
 			httpconn = (HttpURLConnection) conn;
 		}
 
-		// Check modified date
+		// Check modified date.
 		DateTime modified = null;
 		if (writeTo.exists()) {
 			modified = new DateTime(writeTo.lastModified());
 			conn.setRequestProperty("If-Modified-Since", modified.toString(HTTP_DATE_TIME));
 		}
+
+		// Set the user agent for the request.
+		System.setProperty("http.agent", "");
+		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
 		setHeaders(conn);
 
 		conn.connect();
@@ -71,8 +76,8 @@ public class DefaultURLConnector extends DownloadURLConnector implements URLConn
 
 		// Modified date handling. If server copy isn't newer than our cache, don't download again and use cached copy instead.
 
-		// This checks if the server has replied with 304 NOT MODIFIED
-		if (httpconn != null && httpconn.getResponseCode() == 304) { // not modified
+		// This checks if the server has replied with 304 NOT MODIFIED.
+		if (httpconn != null && httpconn.getResponseCode() == 304) { // Not modified
 			try {
 				conn.getInputStream().close();
 			} catch (IOException ignore) { }
@@ -84,10 +89,10 @@ public class DefaultURLConnector extends DownloadURLConnector implements URLConn
 
 		if (modified != null) {
 
-			// This checks for the last modified date
+			// This checks for the last modified date.
 			long i = conn.getHeaderFieldDate("Last-Modified", -1);
 			DateTime serverModified = new DateTime(i, DateTimeZone.forOffsetHours(0));
-			if (serverModified.isBefore(modified) || serverModified.isEqual(modified)) { // file hasn't changed
+			if (serverModified.isBefore(modified) || serverModified.isEqual(modified)) { // File hasn't changed.
 				try {
 					conn.getInputStream().close();
 				} catch (IOException ignore) { }
