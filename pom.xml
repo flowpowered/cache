@@ -7,22 +7,43 @@
 	<artifactId>downpour</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<url>http://www.spout.org</url>
 	<inceptionYear>2012</inceptionYear>
+	<url>https://github.com/SpoutDev/Downpour</url>
 	<description>Offline caching library that provides a lightweight API to manage a local cache, while supporting dynamic responses.</description>
 
 	<!-- Parent information -->
 	<parent>
-		<groupId>org.spout</groupId>
-		<artifactId>shared-parent</artifactId>
-		<version>1</version>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
 	</parent>
 
 	<!-- Build properties -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<buildNumber>0</buildNumber>
+		<ciSystem>unknown</ciSystem>
+		<commit>unknown</commit>
 	</properties>
+
+	<!-- Project developers -->
+	<developers>
+		<developer>
+			<id>Afforess</id>
+			<name>Cameron McAvoy</name>
+			<email>afforess@gmail.com</email>
+		</developer>
+		<developer>
+			<id>narrowtux</id>
+			<name>Moritz Schmale</name>
+			<email>narrow.m@gmail.com</email>
+		</developer>
+		<developer>
+			<id>Wulfspider</id>
+			<name>Luke Spragg</name>
+			<email>the@wulf.im</email>
+		</developer>
+	</developers>
 
 	<!-- Organization information -->
 	<organization>
@@ -61,14 +82,34 @@
 	<!-- Dependency repositories -->
 	<repositories>
 		<repository>
-			<id>spout-repo</id>
-			<url>http://nexus.spout.org/content/groups/public</url>
+			<id>sonatype-nexus-releases</id>
+			<url>https://oss.sonatype.org/content/repositories/releases</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
 	</repositories>
+
+	<!-- Build plugin repositories -->
+	<pluginRepositories>
+		<pluginRepository>
+			<id>sonatype-nexus-releases</id>
+			<url>https://oss.sonatype.org/content/repositories/releases</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<!-- Project dependencies -->
 	<dependencies>
