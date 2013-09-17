@@ -133,7 +133,7 @@ public class DownpourCache {
 			if (cacheFile.exists()) {
 				return new FileInputStream(cacheFile);
 			} else {
-				throw new NoCacheException("Cache does not contain expected file: [" + cacheFile.getPath() + "]");
+				throw new NoCacheException("Cache file does not contain expected content: [" + cacheFile.getPath() + "]");
 			}
 		} else {
 			File temp = new File(tempDir, getCacheKey(url) + CACHE_FILE_SUFFIX);
