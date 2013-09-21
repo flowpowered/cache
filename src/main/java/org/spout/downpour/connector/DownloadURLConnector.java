@@ -29,17 +29,19 @@ import java.net.URLConnection;
 import org.spout.downpour.CachingInputStream;
 
 /**
- * The default URLConnector
- * 
- * Opens the URL with
- * <pre>url.openStream();</pre>
+ * The default URLConnector.
+ *
+ * Opens the URL with <pre>url.openStream();</pre>
  */
 public class DownloadURLConnector implements URLConnector {
-
 	public InputStream openURL(URL url, File temp, File writeTo) throws IOException {
 		URLConnection conn = url.openConnection();
 
 		setHeaders(conn);
+
+		// Set the user agent for the request.
+		System.setProperty("http.agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.162 Safari/535.19");
+		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.162 Safari/535.19");
 
 		conn.connect();
 
@@ -49,11 +51,11 @@ public class DownloadURLConnector implements URLConnector {
 	}
 
 	protected CachingInputStream download(URLConnection conn, final File temp, final File writeTo) throws IOException {
-		// download the server copy
+		// Download the server copy.
 		CachingInputStream cache = new CachingInputStream(conn.getInputStream(), new FileOutputStream(temp));
 		cache.setExpectedBytes(conn.getContentLength());
 
-		// When successfully downloaded, move temp file to normal location
+		// When successfully downloaded, move temp file to normal location.
 		cache.setOnFinish(new Runnable() {
 			public void run() {
 				if (writeTo.exists()) {
@@ -63,7 +65,7 @@ public class DownloadURLConnector implements URLConnector {
 			}
 		});
 
-		// When failed, delete temp file
+		// When failed, delete temp file.
 		cache.setOnFailure(new Runnable() {
 			public void run() {
 				temp.delete();
@@ -79,6 +81,6 @@ public class DownloadURLConnector implements URLConnector {
 	}
 
 	public void onConnected(URLConnection connection) {
-		// Nothing to do here
+		// Nothing to do here.
 	}
 }

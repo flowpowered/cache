@@ -31,12 +31,12 @@ import org.junit.Test;
 
 public class TestDownpourCache {
 	public static final String TEST_URL = "https://raw.github.com/SpoutDev/Downpour/master/src/test/resources/test.json";
-	
+
 	@Test
 	public void testCache() throws MalformedURLException, NoCacheException, IOException {
 		File cacheDb = new File("cachedb");
 		if (cacheDb.exists()) {
-			for (File file:cacheDb.listFiles()) {
+			for (File file : cacheDb.listFiles()) {
 				file.delete();
 			}
 		}
@@ -46,10 +46,10 @@ public class TestDownpourCache {
 		cache.setOfflineMode(true);
 		in = cache.get(new URL(TEST_URL));
 		ByteBuffer offlineTest = readFrom(in);
-		
+
 		Assert.assertEquals("The offline copy doesn't match the online copy", onlineTest, offlineTest);
 	}
-	
+
 	public ByteBuffer readFrom(InputStream in) throws IOException {
 		ByteBuffer buffer = ByteBuffer.allocate(1024);
 		int data;

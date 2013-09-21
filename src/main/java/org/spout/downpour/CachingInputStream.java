@@ -25,14 +25,12 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 /**
- * An InputStream implementation that reads from another InputStream while caching the data to an OutputStream
+ * An InputStream implementation that reads from another InputStream while caching the data to an OutputStream.
  */
 public class CachingInputStream extends InputStream {
 	private InputStream readFrom = null;
 	private OutputStream writeTo = null;
-
 	private ByteBuffer buffer = ByteBuffer.allocate(1024);
-
 	private Runnable onFinish = null;
 	private Runnable onFailure = null;
 	private long expectedBytes = -1;
@@ -41,9 +39,10 @@ public class CachingInputStream extends InputStream {
 	private boolean exception = false;
 
 	/**
-	 * Creates a new caching InputStream
-	 * @param readFrom the stream to read data from
-	 * @param writeTo the stream to cache the read data to
+	 * Creates a new caching InputStream.
+	 *
+	 * @param readFrom the stream to read data from.
+	 * @param writeTo the stream to cache the read data to.
 	 */
 	public CachingInputStream(InputStream readFrom, OutputStream writeTo) {
 		super();
@@ -75,15 +74,15 @@ public class CachingInputStream extends InputStream {
 		int data = Integer.MAX_VALUE;
 		try {
 			data = readFrom.read();
-			receivedBytes ++;
+			receivedBytes++;
 			if (data == -1) {
 				receivedBytes--;
-				return data; // This is the end of the stream, no need to cache anything
+				return data; // This is the end of the stream, no need to cache anything.
 			}
-			if (!buffer.hasRemaining()) { // Buffer is full
-				// Write buffer to output
+			if (!buffer.hasRemaining()) { // Buffer is full.
+				// Write buffer to output.
 				writeTo.write(buffer.array(), 0, buffer.capacity());
-				// Reset buffer
+				// Reset buffer.
 				buffer.position(0);
 			}
 			buffer.put((byte) data);
@@ -95,7 +94,7 @@ public class CachingInputStream extends InputStream {
 	}
 
 	/**
-	 * Closes the stream it reads from and the stream it caches to
+	 * Closes the stream it reads from and the stream it caches to.
 	 */
 	@Override
 	public void close() throws IOException {
@@ -105,7 +104,7 @@ public class CachingInputStream extends InputStream {
 			readFrom.close();
 			super.close();
 
-			// Write remaining stuff to output
+			// Write remaining stuff to output.
 			try {
 				if (buffer != null) {
 					writeTo.write(buffer.array(), 0, buffer.position());
@@ -133,7 +132,7 @@ public class CachingInputStream extends InputStream {
 								e.printStackTrace();
 							}
 						}
-						throw new IOException("File was not completely downloaded! Expected="+getExpectedBytes()+" actual="+getReceivedBytes());
+						throw new IOException("File was not completely downloaded! Expected=" + getExpectedBytes() + " actual=" + getReceivedBytes());
 					}
 				}
 			}
