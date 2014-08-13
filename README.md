@@ -94,5 +94,5 @@ Flow JSON Cache is licensed under the [MIT License][License]. Basically, you can
 * [Spout](https://spout.org/) and contributors - *where we all began, and for much of the re-licensed code.*
 * All the people behind [Java](http://www.oracle.com/technetwork/java/index.html), [Maven](http://maven.apache.org/), and [Gradle](http://www.gradle.org/).
 
-[Donate]: https://flattr.com/submit/auto?user_id=spout&url=https://github.com/flow/flow-json-cache&title=Flow+JSON Cache&language=Java&tags=github&category=software
+[Donate]: https://flattr.com/submit/auto?user_id=spout&url=https://github.com/flow/flow-json-cache&title=Flow+JSON+Cache&language=Java&tags=github&category=software
 [License]: https://tldrlegal.com/license/mit-license
